@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HOMEWORK2</title>
+    <script src="js/Stats.js"></script>
+    <script src="js/tween.min.js"></script>
+    <script src="js/clock.js"></script>
+    <script src="js/three.js" data-ke-src="js/three.js"></script>
+
+    <style type="text/css">
+        div#canvas-frame {
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            height: 600px;
+            background-color: #EEEEEE;
+        }
+    </style>
+
+    <script>
+
+        var renderer;
+        var states;
+        //var
+        //var width;
+       // var height;
+        function initThree() {
+            width = document.getElementById('canvas-frame').clientWidth;
+            height = document.getElementById('canvas-frame').clientHeight;
+            renderer = new THREE.WebGLRenderer({
+                antialias : true
+            });
+            renderer.setSize(width, height);
+            document.getElementById('canvas-frame').appendChild(renderer.domElement);
+
+            //renderer.setClearColor(0xFFFFFF, 1.0);//canvas背景色
+            states = new Stats();
+            states.domElement.style.position = 'absolute';
+            states.domElement.style.right = '15px';
+            states.domElement.style.top = '15px';
+            document.getElementById('canvas-frame').appendChild(states.domElement);
+        }
+
+        var camera;
+        function initCamera(){
+            camera = new THREE.PerspectiveCamera(60,width / height,10,10000);
+            camera.position.x = 0;
+            camera.position.y = 500;
+            camera.position.z = 500;
+            camera.up.x = 0;
+            camera.up.y = 1;
+            camera.up.z = 0;
+            camera.lookAt({
+                x : 0,
+                y : 0,
+                z : 0
+            });
+        }
+
+        var scene;
+        function initScene(){
+            scene = new THREE.Scene();
+        }
+
+
+        var light;
+        function initLight(){
+            light = new THREE.AmbientLight(0xFFFFFF);
+            light.position.set(100, 100, 200);
+            scene.add(light);
+            light = new THREE.SpotLight(0x00EEEE,0.4,0,90,0 );
+            light.position.set(1500, 0,1500);
+            scene.add(light);
+        }
+
+        var drawing1;
+       // var mesh;
+       // var texture;
+        function initObject(){
+            var geometry = new THREE.CubeGeometry(200,300,100);
+            var material = new THREE.MeshLambertMaterial({color: 0xFFE7BA});
+            drawing1 = new THREE.Mesh(geometry,material);
+            drawing1.position.x=-500;
+            scene.add(drawing1);
+
+            var geometry2 = new THREE.Geometry();
+            geometry2.vertices.push( new THREE.Vector3( - 1000, -150, 0 ) );
+            geometry2.vertices.push( new THREE.Vector3( 1000, -150, 0 ) );
+            for(var i = 0; i <= 40; i ++ ) {
+                var line = new THREE.Line( geometry2, new THREE.LineBasicMaterial( { color: 0xFF0000, opacity: 0.2 } ) );
+                line.position.z = ( i * 50 ) - 1000;
+                scene.add( line );
+
+                var line2 = new THREE.Line( geometry2, new THREE.LineBasicMaterial( { color: 0xFF0000, opacity: 0.2 } ) );
+                line2.position.x = ( i * 50 ) - 1000;
+                line2.rotation.y = 90 * Math.PI / 180;
+                scene.add( line2 );
+            }
+
+            /*
+            var geometry3 = new THREE.CubeGeometry(200, 200, 200);
+            texture = new THREE.Texture( canvas);
+            var material2 = new THREE.MeshBasicMaterial({map:texture});
+            texture.needsUpdate = true;
+            mesh = new THREE.Mesh( geometry3,material2 );
+            texture.needsUpdate = true;
+            scene.add( mesh );
+            window.addEventListener( 'resize', onWindowResize, false );
+            */
+
+        }
+
+        function initTween(){
+            new TWEEN.Tween( drawing1.position)
+                    .to( { x: 50,z:-500 }, 10000 ).repeat( Infinity ).start();
+        }
+
+        /*
+       function onWindowResize(){
+           camera.aspect = window.innerWidth / window.innerHeight;
+           camera.updateProjectionMatrix();
+           renderer.setSize( window.innerWidth, window.innerHeight );
+       }*/
+
+        function render(){
+            //renderer.clear();
+            //camera.position.x = camera.position.x+1;
+            //drawing1.position.x +=1;
+            drawing1.rotation.y += 0.05;
+            renderer.render(scene, camera);
+           //texture.needsUpdate = true;
+            //mesh.rotation.y -= 0.01;
+           // mesh.rotation.x -= 0.01;
+
+            requestAnimationFrame(render);
+            states.update();
+            TWEEN.update();
+        }
+
+        function threeStart(){
+            //clock();
+            initThree();
+            initCamera();
+            initScene();
+            initLight();
+            initObject();
+            initTween();
+            render();
+        }
+
+    </script>
+</head>
+<body onload=" threeStart(); ">
+    <div id="canvas-frame"></div>
+</body>
+</html>
