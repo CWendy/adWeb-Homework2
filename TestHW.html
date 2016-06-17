@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>test1</title>
+    <style>canvas { width:100%;height:100% }</style>
+    <script src="js/three.js"></script>
+    <style type="text/css">
+        div#canvas-frame {
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            height: 600px;
+            background-color: #EEEEEE;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        var scene = new THREE.Scene(); //场景
+        var camera = new THREE.PerspectiveCamera(100, window.innerWidth/window.innerHeight, 0.1, 1000); //透视相机
+        var renderer = new THREE.WebGLRenderer({ antialias : true}); //渲染器
+        // 设置渲染器的大小为窗口的内宽度，也就是内容区的宽度
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        //渲染器画布挂在body尾部,渲染结果可以在页面中显示
+        document.body.appendChild(renderer.domElement);
+
+        //添加立方体物体
+        var geometry = new THREE.CubeGeometry(2,3,1);
+        var material = new THREE.MeshBasicMaterial({color: 0xFFE7BA});
+        var cube = new THREE.Mesh(geometry, material);
+        scene.add(cube);
+
+        camera.position.x = 0;
+        camera.position.y = 0;
+        camera.position.z = 5;
+
+        //循环渲染
+        function render() {
+            requestAnimationFrame(render);//渲染循环
+            //setTimeout(render,1000/100);
+            cube.rotation.y += 0.05;//绕y轴旋转
+            renderer.render(scene, camera);//告诉他渲染哪个场景和照相机
+        }
+        render();
+    </script>
+
+</body>
+</html>
